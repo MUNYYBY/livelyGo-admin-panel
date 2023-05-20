@@ -1,27 +1,55 @@
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
+// ** React Imports
+import { useEffect, useState } from 'react'
 
-const UsersPanel = () => {
+//** Next imports */
+import Link from 'next/link'
+
+// ** MUI Imports
+import Grid from '@mui/material/Grid'
+import MuiLink from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+
+// ** Custom Components Imports
+import PageHeader from 'src/@core/components/page-header'
+
+// ** Demo Components Imports
+import TableColumns from 'src/views/table/data-grid/AllUsersTableColumns'
+import { getAllUsers } from 'Client/request'
+import { useAuth } from 'src/hooks/useAuth'
+
+const DataGrid = () => {
+  const [allAdmins, setAllAdmins] = useState(null)
+  const { getAuthToken } = useAuth()
+  const [IsNewAdmin, setIsNewAdmin] = useState(false)
+
+  useEffect(() => {
+    getAllUsers().then(res => {
+      if (!res.error) {
+        setAllAdmins(res)
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Grid container spacing={6}>
+      <PageHeader
+        title={
+          <Typography variant='h5'>
+            <MuiLink>Users</MuiLink>
+          </Typography>
+        }
+        subtitle={
+          <Typography variant='body2'>
+            This page shows all the users in the system. You can perform all the operations and all other things as well
+          </Typography>
+        }
+      />
       <Grid item xs={12}>
-        <Card>
-          <CardHeader title='All Users 🙌'></CardHeader>
-          <CardContent>
-            <Typography sx={{ mb: 2 }}>User Panel</Typography>
-            <Typography>
-              Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin. Carrot cake dragée chupa chups jujubes.
-              Macaroon liquorice cookie wafer tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.
-            </Typography>
-          </CardContent>
-        </Card>
+        <TableColumns row={allAdmins} newAdmin={setIsNewAdmin} />
       </Grid>
     </Grid>
   )
 }
 
-export default UsersPanel
+export default DataGrid

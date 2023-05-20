@@ -35,11 +35,13 @@ const AuthProvider = ({ children }) => {
       const storedToken1 = window.localStorage.getItem(authConfig.storageTokenKeyName)
       const storedToken2 = JSON.parse(storedToken1)
       const userDataCheck = window.localStorage.getItem('userData')
-      console.log(userDataCheck)
-      if (storedToken2) {
+      console.log(JSON.parse(userDataCheck))
+      if (storedToken2 && userDataCheck) {
+        setUser(JSON.parse(userDataCheck))
         setLoading(false)
       } else {
         setLoading(false)
+        handleLogout()
       }
     }
     initAuth()
