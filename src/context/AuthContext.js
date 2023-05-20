@@ -31,29 +31,13 @@ const AuthProvider = ({ children }) => {
   const router = useRouter()
   useEffect(() => {
     const initAuth = async () => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-      if (storedToken) {
-        setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
-            setLoading(false)
-            setUser({ ...response.data.userData })
-          })
-          .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
-            setUser(null)
-            setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
-              router.replace('/login')
-            }
-          })
+      setLoading(true)
+      const storedToken1 = window.localStorage.getItem(authConfig.storageTokenKeyName)
+      const storedToken2 = JSON.parse(storedToken1)
+      const userDataCheck = window.localStorage.getItem('userData')
+      console.log(userDataCheck)
+      if (storedToken2) {
+        setLoading(false)
       } else {
         setLoading(false)
       }
@@ -62,20 +46,34 @@ const AuthProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // ** Call the following function when and check which type
+  // ** Of user is trying to login
   const handleLogin = (params, errorCallback) => {
     axios
-      .post(authConfig.loginEndpoint, params)
+      .post(authConfig.adminLoginEndpoint, { email: params.email, password: params.password })
       .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
+        console.log(response.data)
+        const res = response.data
+
+        const userData = {
+          id: res.id,
+          userName: res.userName,
+          name: res.first_name + ' ' + res.last_name,
+          role: 'admin'
+        }
+
+        const tokenData = {
+          token: response.data.token
+        }
+        window.localStorage.setItem(authConfig.storageTokenKeyName, JSON.stringify(tokenData))
+        window.localStorage.setItem('userData', JSON.stringify(userData))
         const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+        setUser(userData)
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL)
       })
       .catch(err => {
+        console.log(err)
         if (errorCallback) errorCallback(err)
       })
   }

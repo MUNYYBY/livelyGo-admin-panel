@@ -5,10 +5,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 // ** MUI Components
-import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
@@ -85,17 +82,16 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().min(5).required().email(),
   password: yup.string().min(5).required()
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@vuexy.com'
+  password: '12345678',
+  email: 'munyyb@gmail.com'
 }
 
 const LoginPage = () => {
-  const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
 
   // ** Hooks
@@ -121,8 +117,8 @@ const LoginPage = () => {
 
   const onSubmit = data => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
+    auth.login({ email, password }, () => {
+      setError('credentials', {
         type: 'manual',
         message: 'Email or Password is invalid'
       })
@@ -205,12 +201,12 @@ const LoginPage = () => {
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
                       autoFocus
-                      label='Email'
+                      label='Email '
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.email)}
-                      placeholder='admin@vuexy.com'
+                      placeholder='admin@livelyGo.com'
                     />
                   )}
                 />
@@ -253,20 +249,11 @@ const LoginPage = () => {
                   </FormHelperText>
                 )}
               </FormControl>
-              <Box
-                sx={{
-                  mb: 1.75,
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <FormControlLabel
-                  label='Remember Me'
-                  control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
-                />
-              </Box>
+              {errors.credentials && (
+                <FormHelperText sx={{ color: 'error.main', fontSize: 14, marginBottom: 2 }} id=''>
+                  {errors.credentials.message}
+                </FormHelperText>
+              )}
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 4 }}>
                 Login
               </Button>

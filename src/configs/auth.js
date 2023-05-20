@@ -1,7 +1,9 @@
+import { API_URL } from '../../Client/request'
+
 export default {
   meEndpoint: '/auth/me',
-  loginEndpoint: '/jwt/login',
+  adminLoginEndpoint: API_URL + 'login_admin',
   registerEndpoint: '/jwt/register',
   storageTokenKeyName: 'accessToken',
-  onTokenExpiration: 'refreshToken' // logout | refreshToken
+  onTokenExpiration: 'logout' // logout | refreshToken
 }

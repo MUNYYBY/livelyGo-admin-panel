@@ -2,19 +2,17 @@ const navigation = () => [
   {
     title: 'Home',
     path: '/home',
-    icon: 'tabler:smart-home',
+    icon: 'tabler:smart-home'
   },
   {
-    title: 'Second Page',
-    path: '/second-page',
-    icon: 'tabler:mail',
+    title: 'Users',
+    path: '/users',
+    icon: 'tabler:users'
   },
   {
-    path: '/acl',
-    action: 'read',
-    subject: 'acl-page',
-    title: 'Access Control',
-    icon: 'tabler:shield',
+    title: 'Streams',
+    path: '/streams',
+    icon: 'tabler:broadcast'
   }
 ]
 
