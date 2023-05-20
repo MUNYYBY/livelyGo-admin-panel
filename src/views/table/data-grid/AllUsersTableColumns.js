@@ -31,6 +31,7 @@ import { BlockUser, DeleteAdmin } from 'Client/request'
 import { admin_signin } from 'Client/request'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
+import moment from 'moment'
 
 // ** renders client column
 const renderClient = params => {
@@ -194,6 +195,17 @@ const TableColumns = props => {
     {
       flex: 0.06,
       minWidth: 120,
+      headerName: 'Hearts',
+      field: 'Hearts',
+      renderCell: params => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.user.hearts}
+        </Typography>
+      )
+    },
+    {
+      flex: 0.06,
+      minWidth: 120,
       headerName: 'Status',
       field: 'Status',
       renderCell: params => (
@@ -201,6 +213,19 @@ const TableColumns = props => {
           {params.row.user.status}
         </Typography>
       )
+    },
+    {
+      flex: 0.08,
+      minWidth: 110,
+      field: 'Created on',
+      valueGetter: params => params.row.createdAt,
+      renderCell: params => {
+        return (
+          <Typography variant='body2' sx={{ color: 'text.primary' }}>
+            {moment(params.row.createdAt).format('DD/MM/YYYY')}
+          </Typography>
+        )
+      }
     },
     {
       flex: 0.125,
