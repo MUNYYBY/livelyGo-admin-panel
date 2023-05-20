@@ -23,3 +23,21 @@ export async function getAllUsers() {
       return { error: 'Some error occured!:' + error }
     })
 }
+
+//async function which block a certain user
+export async function BlockUser(userId) {
+  var config = {
+    method: 'post',
+    url: API_URL + 'block_user?userId=' + userId
+  }
+
+  return axios(config)
+    .then(response => {
+      return response.data
+    })
+    .catch(error => {
+      console.log(error)
+
+      return { error: 'Some error occured!:' + error }
+    })
+}

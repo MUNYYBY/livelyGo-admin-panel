@@ -27,7 +27,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
-import { DeleteAdmin } from 'Client/request'
+import { BlockUser, DeleteAdmin } from 'Client/request'
 import { admin_signin } from 'Client/request'
 import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
@@ -49,7 +49,7 @@ const renderClient = params => {
   }
 }
 
-const RowOptions = ({ id, newAdmin }) => {
+const RowOptions = ({ id, newAdmin, status }) => {
   // ** State
   const { getAuthToken } = useAuth()
   const [open, setOpen] = useState(false)
@@ -62,15 +62,16 @@ const RowOptions = ({ id, newAdmin }) => {
     setOpen(false)
   }
 
-  const handleDelete = () => {
-    DeleteAdmin(getAuthToken(), id).then(res => {
+  const handleBlock = () => {
+    handleClose()
+    BlockUser(id).then(res => {
       if (!res.error) {
         newAdmin(true)
-        toast.success(`Successfully Deleted admin ${id}`, {
+        toast.success(`Successfully ${status == 'active' ? 'Blocked' : 'Activated'} user with id:${id}`, {
           position: 'bottom-right'
         })
       } else {
-        toast.error(`Error Deleting admin ${id}`, {
+        toast.error(`Error while ${status == 'active' ? 'Blocking' : 'Activating'} user with id ${id}`, {
           position: 'bottom-right'
         })
       }
@@ -81,7 +82,7 @@ const RowOptions = ({ id, newAdmin }) => {
     <>
       <MenuItem onClick={handleClickOpen} sx={{ '& svg': { mr: 2 } }}>
         <Icon icon='tabler:user-off' fontSize={20} />
-        Block
+        {status == 'active' ? 'Block' : 'Activate'}
       </MenuItem>
       <Dialog
         open={open}
@@ -89,14 +90,18 @@ const RowOptions = ({ id, newAdmin }) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>{'Confirm Block'}</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>
+          {'Confirm '} {status == 'active' ? 'Block' : 'Activate'}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>Are you sure you want to Block this user?</DialogContentText>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure you want to {status == 'active' ? 'Block' : 'Activate'} this user?
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
-            Block
+          <Button onClick={handleBlock} autoFocus>
+            {status == 'active' ? 'Block' : 'Activate'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -111,6 +116,16 @@ const TableColumns = props => {
   const { user } = useAuth()
 
   const columns = [
+    {
+      flex: 0.04,
+      minWidth: 50,
+      field: '# ID',
+      renderCell: params => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.user.id}
+        </Typography>
+      )
+    },
     {
       flex: 0.12,
       minWidth: 90,
@@ -192,7 +207,9 @@ const TableColumns = props => {
       minWidth: 200,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: params => <RowOptions id={params.row.user.id} newAdmin={props.newAdmin} />
+      renderCell: params => (
+        <RowOptions id={params.row.user.id} newAdmin={props.newAdmin} status={params.row.user.status} />
+      )
     }
   ]
 

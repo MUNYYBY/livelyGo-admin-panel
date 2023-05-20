@@ -31,6 +31,18 @@ const DataGrid = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (IsNewAdmin) {
+      getAllUsers().then(res => {
+        setIsNewAdmin(false)
+        if (!res.error) {
+          setAllAdmins(res)
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [IsNewAdmin])
+
   return (
     <Grid container spacing={6}>
       <PageHeader
