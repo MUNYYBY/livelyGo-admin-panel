@@ -19,6 +19,10 @@ module.exports = {
   experimental: {
     esmExternals: false
   },
+  images: {
+    loader: 'akamai',
+    path: ''
+  },
   webpack: config => {
     config.resolve.alias = {
       ...config.resolve.alias,

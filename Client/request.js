@@ -1,10 +1,10 @@
 var axios = require('axios')
 
 //dev url
-export const API_URL = 'http://localhost:4001/api/v1/'
+// export const API_URL = 'http://localhost:4001/api/v1/'
 
 //production url
-// export const API_URL = 'https://localhost:4001/api/v1/'
+export const API_URL = 'http://13.127.232.204:4001/api/v1/'
 
 //async function which get all the users
 export async function getAllUsers() {
